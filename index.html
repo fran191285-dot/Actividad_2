@@ -1,1 +1,140 @@
 <h1>github pages</h1> 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetroVerse | Tech & Hardware Vintage</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent: #00ffcc;
+            --text: #e0e0e0;
+        }
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #000;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+        }
+        h1 { color: var(--accent); margin: 0; }
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .producto-card {
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+        .producto-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        .precio {
+            font-size: 1.5em;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        .etiqueta {
+            display: inline-block;
+            background: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-right: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover { background-color: #00b38f; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>👾 RetroVerse</h1>
+        <p>Tu marketplace de hardware y tecnología de otra época</p>
+    </header>
+
+    <div class="container" id="catalogo">
+        </div>
+
+    <script>
+        // 1. Definición de la estructura de datos (Arreglo de Registros)
+        const inventarioRetro = [
+            {
+                id_producto: "REV-001", // CLAVE
+                nombre: "Monitor LCD IBM 15 Pulgadas",
+                categoria: "Monitores",
+                anio_lanzamiento: 2001,
+                estado_conservacion: "Restaurado",
+                precio: 45000
+            },
+            {
+                id_producto: "REV-002", // CLAVE
+                nombre: "Tarjeta Gráfica 3dfx Voodoo5 5500",
+                categoria: "Componentes PC",
+                anio_lanzamiento: 2000,
+                estado_conservacion: "Caja Sellada",
+                precio: 120000
+            },
+            {
+                id_producto: "REV-003", // CLAVE
+                nombre: "Teclado Mecánico IBM Model M",
+                categoria: "Periféricos",
+                anio_lanzamiento: 1985,
+                estado_conservacion: "Usado - Funcional",
+                precio: 85000
+            }
+        ];
+
+        // 2. Función para renderizar el registro en el DOM
+        function cargarProductos() {
+            const catalogo = document.getElementById('catalogo');
+            
+            inventarioRetro.forEach(producto => {
+                const card = document.createElement('div');
+                card.className = 'producto-card';
+                card.innerHTML = `
+                    <h3>${producto.nombre}</h3>
+                    <p>
+                        <span class="etiqueta">ID: ${producto.id_producto}</span>
+                        <span class="etiqueta">${producto.anio_lanzamiento}</span>
+                    </p>
+                    <p><strong>Categoría:</strong> ${producto.categoria}</p>
+                    <p><strong>Estado:</strong> ${producto.estado_conservacion}</p>
+                    <p class="precio">$${producto.precio.toLocaleString('es-AR')}</p>
+                    <button onclick="alert('Simulando compra del registro clave: ${producto.id_producto}')">Añadir al Carrito</button>
+                `;
+                catalogo.appendChild(card);
+            });
+        }
+
+        // Ejecutar al cargar la página
+        window.onload = cargarProductos;
+    </script>
+</body>
+</html>
