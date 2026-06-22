@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Market | Tecnología Vintage</title>
+    <title>Retro Market | Menú Principal</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -26,12 +26,34 @@
                 repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 243, 255, 0.05) 2px, rgba(0, 243, 255, 0.05) 4px);
         }
 
+        /* --- BOTÓN PARA ABRIR LA VENTANA --- */
+        .btn-flotante {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background-color: var(--neon-pink);
+            color: #fff;
+            border: none;
+            padding: 15px 20px;
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+            transition: transform 0.2s;
+            z-index: 100;
+        }
+
+        .btn-flotante:hover {
+            transform: scale(1.05);
+            background-color: #ff3399;
+        }
+
         header {
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
             border-bottom: 2px solid var(--neon-pink);
             background: linear-gradient(180deg, #1a0014 0%, var(--bg-dark) 100%);
-            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.2);
         }
 
         h1 {
@@ -45,35 +67,41 @@
 
         .descripcion {
             max-width: 800px;
-            margin: 15px auto 0;
+            margin: 20px auto 0;
             font-size: 1.1rem;
             color: var(--text-muted);
             line-height: 1.6;
         }
 
-        /* --- ESTILOS DEL NUEVO FORMULARIO --- */
-        .form-container {
-            max-width: 800px;
-            margin: 40px auto 0 auto;
-            background-color: var(--card-bg);
+        /* --- VENTANA FLOTANTE DEL FORMULARIO (MODAL) --- */
+        #ventana-formulario {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 350px;
+            background-color: #111115;
             padding: 25px;
             border-radius: 12px;
-            border: 1px dashed var(--neon-pink);
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.1);
+            border: 2px solid var(--neon-pink);
+            box-shadow: -5px 5px 30px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 0, 127, 0.2);
+            z-index: 1000; /* Siempre arriba de todo */
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .form-container h2 {
+        #ventana-formulario h2 {
             font-family: 'VT323', monospace;
             color: var(--neon-pink);
             margin-top: 0;
-            font-size: 2rem;
+            font-size: 1.8rem;
             text-align: center;
         }
 
-        .formulario-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+        .formulario-columna {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             margin-bottom: 20px;
         }
 
@@ -85,7 +113,7 @@
             color: #fff;
             border-radius: 6px;
             font-family: 'Inter', sans-serif;
-            box-sizing: border-box; /* Asegura que el padding no rompa el ancho */
+            box-sizing: border-box;
         }
 
         input:focus {
@@ -94,14 +122,43 @@
             box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
         }
 
-        .input-full-width {
-            grid-column: 1 / -1; /* Ocupa todo el ancho disponible */
+        .btn-submit {
+            width: 100%;
+            background-color: var(--neon-cyan);
+            color: #000;
+            font-size: 1.1rem;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .btn-submit:hover {
+            background-color: #00c4cc;
+        }
+
+        .btn-cerrar {
+            width: 100%;
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid #555;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-cerrar:hover {
+            background-color: #333;
+            color: #fff;
         }
         /* ------------------------------------ */
 
         .container {
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 50px auto;
             padding: 0 20px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -134,7 +191,6 @@
         .card:hover {
             transform: translateY(-5px);
             border-color: var(--neon-cyan);
-            box-shadow: 0 10px 20px rgba(0, 243, 255, 0.1);
         }
 
         .card:hover::before { transform: scaleX(1); }
@@ -187,7 +243,6 @@
             font-size: 2.5rem;
             color: var(--neon-cyan);
             margin: 20px 0;
-            text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
             margin-top: auto;
         }
 
@@ -196,7 +251,7 @@
             gap: 10px;
         }
 
-        button {
+        button.btn-card {
             flex: 1;
             padding: 12px;
             font-family: 'Inter', sans-serif;
@@ -221,40 +276,31 @@
         }
 
         .btn-datos:hover { background-color: rgba(255, 0, 127, 0.1); }
-        
-        .btn-submit {
-            width: 100%;
-            background-color: var(--neon-pink);
-            color: #fff;
-            font-size: 1.1rem;
-        }
-        
-        .btn-submit:hover {
-            background-color: #d10068;
-            box-shadow: 0 0 10px var(--neon-pink);
-        }
     </style>
 </head>
 <body>
 
+    <button class="btn-flotante" onclick="abrirVentana()">+ Añadir Reliquia</button>
+
     <header>
         <h1>RETRO MARKET</h1>
-        <p class="descripcion">Una plataforma especializada en la compra y venta de tecnología retro, consolas de videojuegos clásicas, computadoras vintage y cartuchos de colección.</p>
+        <p class="descripcion">MENÚ PRINCIPAL: Catálogo de tecnología retro, consolas clásicas y computadoras vintage.</p>
     </header>
 
-    <div class="form-container">
-        <h2>+ Publicar Nueva Reliquia</h2>
+    <div id="ventana-formulario">
+        <h2>Nueva Publicación</h2>
         <form id="formAgregar" onsubmit="agregarProducto(event)">
-            <div class="formulario-grid">
+            <div class="formulario-columna">
                 <input type="text" id="nuevo-id" placeholder="ID (Ej: RTM-1004) [CLAVE]" required>
                 <input type="text" id="nuevo-nombre" placeholder="Nombre del producto" required>
                 <input type="text" id="nueva-categoria" placeholder="Categoría" required>
                 <input type="number" id="nuevo-anio" placeholder="Año de lanzamiento" required>
                 <input type="text" id="nuevo-estado" placeholder="Estado (Ej: Usado)" required>
                 <input type="number" id="nuevo-precio" placeholder="Precio ($)" required>
-                <input type="url" id="nueva-imagen" class="input-full-width" placeholder="URL de la imagen (https://...)" required>
+                <input type="url" id="nueva-imagen" placeholder="URL de la imagen" required>
             </div>
-            <button type="submit" class="btn-submit">Añadir al Inventario</button>
+            <button type="submit" class="btn-submit">Guardar Registro</button>
+            <button type="button" class="btn-cerrar" onclick="cerrarVentana()">Volver al Menú Principal</button>
         </form>
     </div>
 
@@ -262,7 +308,7 @@
         </div>
 
     <script>
-        // ESTA ES LA ESTRUCTURA DEL REGISTRO (ARREGLO DE OBJETOS)
+        // ESTRUCTURA DE DATOS
         const inventario = [
             {
                 id_producto: "RTM-1001", 
@@ -293,10 +339,19 @@
             }
         ];
 
-        // FUNCIÓN 1: RENDERIZAR LOS PRODUCTOS EN PANTALLA
+        // FUNCIONES DE VENTANA (NUEVAS)
+        function abrirVentana() {
+            document.getElementById('ventana-formulario').style.display = 'block';
+        }
+
+        function cerrarVentana() {
+            document.getElementById('ventana-formulario').style.display = 'none';
+        }
+
+        // RENDERIZAR PRODUCTOS
         function renderizarProductos() {
             const contenedor = document.getElementById('catalogo');
-            contenedor.innerHTML = ''; // Limpiamos la pantalla antes de dibujar
+            contenedor.innerHTML = ''; 
 
             inventario.forEach(item => {
                 const card = document.createElement('div');
@@ -312,15 +367,15 @@
                     <p class="detalle"><strong>Estado:</strong> ${item.estado_conservacion}</p>
                     <div class="precio">$${item.precio.toLocaleString('es-AR')}</div>
                     <div class="botones">
-                        <button class="btn-comprar" onclick="alert('Iniciando proceso de compra para: ${item.nombre}')">Comprar</button>
-                        <button class="btn-datos" onclick="verRegistro('${item.id_producto}')">Ver Registro</button>
+                        <button class="btn-card btn-comprar" onclick="alert('Iniciando proceso de compra para: ${item.nombre}')">Comprar</button>
+                        <button class="btn-card btn-datos" onclick="verRegistro('${item.id_producto}')">Ver Registro</button>
                     </div>
                 `;
                 contenedor.appendChild(card);
             });
         }
 
-        // FUNCIÓN 2: MOSTRAR LOS DATOS CRUDOS DEL REGISTRO (CONSOLA/ALERTA)
+        // MOSTRAR DATOS CRUDOS
         function verRegistro(idBusqueda) {
             const registroEncontrado = inventario.find(item => item.id_producto === idBusqueda);
             
@@ -337,14 +392,31 @@
             alert(mensaje);
         }
 
-        // FUNCIÓN 3 (NUEVA): AÑADIR UN REGISTRO AL ARREGLO
+        // AGREGAR NUEVO REGISTRO
         function agregarProducto(event) {
-            // Prevenir que la página se recargue al enviar el formulario
             event.preventDefault();
 
-            // 1. Capturar los valores ingresados y armar el nuevo registro
             const nuevoRegistro = {
                 id_producto: document.getElementById('nuevo-id').value,
                 nombre: document.getElementById('nuevo-nombre').value,
                 categoria: document.getElementById('nueva-categoria').value,
                 anio_lanzamiento: parseInt(document.getElementById('nuevo-anio').value),
+                estado_conservacion: document.getElementById('nuevo-estado').value,
+                precio: parseFloat(document.getElementById('nuevo-precio').value),
+                imagen: document.getElementById('nueva-imagen').value
+            };
+
+            inventario.push(nuevoRegistro);
+            renderizarProductos();
+            
+            document.getElementById('formAgregar').reset();
+            alert('¡Nueva reliquia añadida exitosamente al inventario!');
+            
+            // Cerrar la ventana automáticamente tras añadir el registro
+            cerrarVentana();
+        }
+
+        window.onload = renderizarProductos;
+    </script>
+</body>
+</html>
