@@ -28,7 +28,7 @@
 
         header {
             text-align: center;
-            padding: 60px 20px;
+            padding: 40px 20px;
             border-bottom: 2px solid var(--neon-pink);
             background: linear-gradient(180deg, #1a0014 0%, var(--bg-dark) 100%);
             box-shadow: 0 4px 15px rgba(255, 0, 127, 0.2);
@@ -45,15 +45,63 @@
 
         .descripcion {
             max-width: 800px;
-            margin: 20px auto 0;
+            margin: 15px auto 0;
             font-size: 1.1rem;
             color: var(--text-muted);
             line-height: 1.6;
         }
 
+        /* --- ESTILOS DEL NUEVO FORMULARIO --- */
+        .form-container {
+            max-width: 800px;
+            margin: 40px auto 0 auto;
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px dashed var(--neon-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.1);
+        }
+
+        .form-container h2 {
+            font-family: 'VT323', monospace;
+            color: var(--neon-pink);
+            margin-top: 0;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .formulario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            background-color: #0a0a0c;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box; /* Asegura que el padding no rompa el ancho */
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
+        }
+
+        .input-full-width {
+            grid-column: 1 / -1; /* Ocupa todo el ancho disponible */
+        }
+        /* ------------------------------------ */
+
         .container {
             max-width: 1200px;
-            margin: 50px auto;
+            margin: 40px auto;
             padding: 0 20px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -68,7 +116,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            display: flex; /* Para organizar el contenido internamente */
+            display: flex;
             flex-direction: column;
         }
 
@@ -91,15 +139,14 @@
 
         .card:hover::before { transform: scaleX(1); }
 
-        /* Estilo para la imagen del producto (NUEVO) */
         .producto-img {
             width: 100%;
             height: 200px;
-            object-fit: cover; /* Asegura que la imagen no se deforme */
+            object-fit: cover;
             border-radius: 8px;
             margin-bottom: 15px;
             border: 1px solid #333;
-            background-color: #000; /* Fondo negro mientras carga */
+            background-color: #000;
         }
 
         .card h3 {
@@ -120,6 +167,7 @@
             border: 1px solid var(--neon-cyan);
             margin-right: 8px;
             display: inline-block;
+            margin-bottom: 5px;
         }
 
         .badge.clave {
@@ -140,7 +188,7 @@
             color: var(--neon-cyan);
             margin: 20px 0;
             text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
-            margin-top: auto; /* Empuja el precio al final de la tarjeta */
+            margin-top: auto;
         }
 
         .botones {
@@ -173,69 +221,88 @@
         }
 
         .btn-datos:hover { background-color: rgba(255, 0, 127, 0.1); }
+        
+        .btn-submit {
+            width: 100%;
+            background-color: var(--neon-pink);
+            color: #fff;
+            font-size: 1.1rem;
+        }
+        
+        .btn-submit:hover {
+            background-color: #d10068;
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
     </style>
 </head>
 <body>
 
     <header>
         <h1>RETRO MARKET</h1>
-        <p class="descripcion">Una plataforma especializada en la compra y venta de tecnología retro, consolas de videojuegos clásicas, computadoras vintage y cartuchos de colección. Los usuarios pueden listar sus reliquias tecnológicas detallando su estado de conservación.</p>
+        <p class="descripcion">Una plataforma especializada en la compra y venta de tecnología retro, consolas de videojuegos clásicas, computadoras vintage y cartuchos de colección.</p>
     </header>
+
+    <div class="form-container">
+        <h2>+ Publicar Nueva Reliquia</h2>
+        <form id="formAgregar" onsubmit="agregarProducto(event)">
+            <div class="formulario-grid">
+                <input type="text" id="nuevo-id" placeholder="ID (Ej: RTM-1004) [CLAVE]" required>
+                <input type="text" id="nuevo-nombre" placeholder="Nombre del producto" required>
+                <input type="text" id="nueva-categoria" placeholder="Categoría" required>
+                <input type="number" id="nuevo-anio" placeholder="Año de lanzamiento" required>
+                <input type="text" id="nuevo-estado" placeholder="Estado (Ej: Usado)" required>
+                <input type="number" id="nuevo-precio" placeholder="Precio ($)" required>
+                <input type="url" id="nueva-imagen" class="input-full-width" placeholder="URL de la imagen (https://...)" required>
+            </div>
+            <button type="submit" class="btn-submit">Añadir al Inventario</button>
+        </form>
+    </div>
 
     <div class="container" id="catalogo">
         </div>
 
     <script>
-        // ESTA ES LA ESTRUCTURA DEL REGISTRO (ARREGLO DE OBJETOS) - YA INCLUYE IMÁGENES DE PRUEBA
+        // ESTA ES LA ESTRUCTURA DEL REGISTRO (ARREGLO DE OBJETOS)
         const inventario = [
             {
-                id_producto: "RTM-1001", // CLAVE PRINCIPAL
+                id_producto: "RTM-1001", 
                 nombre: "Super Nintendo (SNES)",
                 categoria: "Consola de Videojuegos",
                 anio_lanzamiento: 1990,
                 estado_conservacion: "Caja Sellada (Mint Condition)",
                 precio: 250000,
-                imagen: "https://images.unsplash.com/photo-1510657597147-3801f4c7c88b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&ixid=MnwxfDB8MXxyYW5kb218fHx8fHx8fHwxNjQ3NjUzMDE1&ixlib=rb-1.2.1&q=80&w=600" // <- Imagen de prueba
+                imagen: "https://images.unsplash.com/photo-1510657597147-3801f4c7c88b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&w=600"
             },
             {
-                id_producto: "RTM-1002", // CLAVE PRINCIPAL
+                id_producto: "RTM-1002", 
                 nombre: "Commodore 64",
                 categoria: "Computadora Vintage",
                 anio_lanzamiento: 1982,
                 estado_conservacion: "Restaurado - Funcional",
                 precio: 180000,
-                imagen: "https://images.unsplash.com/photo-1629161742461-9c60e34c3873?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&ixid=MnwxfDB8MXxyYW5kb218fHx8fHx8fHwxNjQ3NjUzMDgw&ixlib=rb-1.2.1&q=80&w=600" // <- Imagen de prueba
+                imagen: "https://images.unsplash.com/photo-1629161742461-9c60e34c3873?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&w=600"
             },
             {
-                id_producto: "RTM-1003", // CLAVE PRINCIPAL
+                id_producto: "RTM-1003", 
                 nombre: "Cartucho The Legend of Zelda (NES)",
                 categoria: "Cartucho de Colección",
                 anio_lanzamiento: 1987,
                 estado_conservacion: "Usado con detalles estéticos",
                 precio: 45000,
-                imagen: "https://images.unsplash.com/photo-1605901309584-818e25960b8f?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&ixid=MnwxfDB8MXxyYW5kb218fHx8fHx8fHwxNjQ3NjUzMDk3&ixlib=rb-1.2.1&q=80&w=600" // <- Imagen de prueba
+                imagen: "https://images.unsplash.com/photo-1605901309584-818e25960b8f?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&w=600"
             }
         ];
 
-        // Función para renderizar el HTML basado en los datos
+        // FUNCIÓN 1: RENDERIZAR LOS PRODUCTOS EN PANTALLA
         function renderizarProductos() {
             const contenedor = document.getElementById('catalogo');
-            
-            // Verificamos si el inventario tiene datos (para depuración)
-            if (!inventario || inventario.length === 0) {
-                contenedor.innerHTML = '<p style="color:red; text-align:center;">Error: El inventario está vacío o no se ha definido correctamente.</p>';
-                return;
-            }
-
-            // Limpiamos el contenedor por si acaso
-            contenedor.innerHTML = '';
+            contenedor.innerHTML = ''; // Limpiamos la pantalla antes de dibujar
 
             inventario.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
                     <img src="${item.imagen}" alt="${item.nombre}" class="producto-img"> 
-                    
                     <h3>${item.nombre}</h3>
                     <div class="badges">
                         <span class="badge clave" title="Clave del Registro">ID: ${item.id_producto}</span>
@@ -244,7 +311,6 @@
                     <p class="detalle"><strong>Categoría:</strong> ${item.categoria}</p>
                     <p class="detalle"><strong>Estado:</strong> ${item.estado_conservacion}</p>
                     <div class="precio">$${item.precio.toLocaleString('es-AR')}</div>
-                    
                     <div class="botones">
                         <button class="btn-comprar" onclick="alert('Iniciando proceso de compra para: ${item.nombre}')">Comprar</button>
                         <button class="btn-datos" onclick="verRegistro('${item.id_producto}')">Ver Registro</button>
@@ -254,33 +320,31 @@
             });
         }
 
-        // Función para demostrar la lectura de la estructura de datos por consola/alerta
+        // FUNCIÓN 2: MOSTRAR LOS DATOS CRUDOS DEL REGISTRO (CONSOLA/ALERTA)
         function verRegistro(idBusqueda) {
-            // Buscamos el registro usando la Clave
             const registroEncontrado = inventario.find(item => item.id_producto === idBusqueda);
             
-            if (!registroEncontrado) {
-                alert("Error: Registro no encontrado.");
-                return;
-            }
-
-            // Formateamos el objeto para mostrarlo de forma académica
             const mensaje = `ESTRUCTURA DEL REGISTRO:\n\n` +
                             `Clave (id_producto): ${registroEncontrado.id_producto}\n` +
                             `Nombre: ${registroEncontrado.nombre}\n` +
                             `Categoría: ${registroEncontrado.categoria}\n` +
                             `Año: ${registroEncontrado.anio_lanzamiento}\n` +
                             `Estado: ${registroEncontrado.estado_conservacion}\n` +
-                            `Precio: $${registroEncontrado.precio.toLocaleString('es-AR')}\n` +
-                            `Imagen (URL): ${registroEncontrado.imagen.substring(0, 30)}...\n\n` + // Recortamos la URL para que no sea tan larga
-                            `*Representación en memoria (JSON completo):*\n` + 
+                            `Precio: $${registroEncontrado.precio}\n\n` +
+                            `*Representación en JSON:*\n` + 
                             JSON.stringify(registroEncontrado, null, 2);
             
             alert(mensaje);
         }
 
-        // Iniciar la app al cargar (AHORA DENTRO DEL SCRIPT PARA EVITAR ERRORES)
-        window.onload = renderizarProductos;
-    </script>
-</body>
-</html>
+        // FUNCIÓN 3 (NUEVA): AÑADIR UN REGISTRO AL ARREGLO
+        function agregarProducto(event) {
+            // Prevenir que la página se recargue al enviar el formulario
+            event.preventDefault();
+
+            // 1. Capturar los valores ingresados y armar el nuevo registro
+            const nuevoRegistro = {
+                id_producto: document.getElementById('nuevo-id').value,
+                nombre: document.getElementById('nuevo-nombre').value,
+                categoria: document.getElementById('nueva-categoria').value,
+                anio_lanzamiento: parseInt(document.getElementById('nuevo-anio').value),
