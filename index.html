@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Retro Market | Tecnología Vintage</title>
-    <!-- Fuente retro de Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -69,6 +68,8 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            display: flex; /* Para organizar el contenido internamente */
+            flex-direction: column;
         }
 
         .card::before {
@@ -89,6 +90,17 @@
         }
 
         .card:hover::before { transform: scaleX(1); }
+
+        /* Estilo para la imagen del producto (NUEVO) */
+        .producto-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover; /* Asegura que la imagen no se deforme */
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+            background-color: #000; /* Fondo negro mientras carga */
+        }
 
         .card h3 {
             font-size: 1.5rem;
@@ -128,6 +140,7 @@
             color: var(--neon-cyan);
             margin: 20px 0;
             text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
+            margin-top: auto; /* Empuja el precio al final de la tarjeta */
         }
 
         .botones {
@@ -170,11 +183,10 @@
     </header>
 
     <div class="container" id="catalogo">
-        <!-- Los productos se cargarán aquí por JS -->
-    </div>
+        </div>
 
     <script>
-        // ESTA ES LA ESTRUCTURA DEL REGISTRO (ARREGLO DE OBJETOS)
+        // ESTA ES LA ESTRUCTURA DEL REGISTRO (ARREGLO DE OBJETOS) - YA INCLUYE IMÁGENES DE PRUEBA
         const inventario = [
             {
                 id_producto: "RTM-1001", // CLAVE PRINCIPAL
@@ -182,8 +194,8 @@
                 categoria: "Consola de Videojuegos",
                 anio_lanzamiento: 1990,
                 estado_conservacion: "Caja Sellada (Mint Condition)",
-                precio: 250000
-                imagen:"https://images.unsplash.com/photo-1534224039826-c7a0c07316c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
+                precio: 250000,
+                imagen: "https://images.unsplash.com/photo-1510657597147-3801f4c7c88b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&ixid=MnwxfDB8MXxyYW5kb218fHx8fHx8fHwxNjQ3NjUzMDE1&ixlib=rb-1.2.1&q=80&w=600" // <- Imagen de prueba
             },
             {
                 id_producto: "RTM-1002", // CLAVE PRINCIPAL
@@ -191,8 +203,8 @@
                 categoria: "Computadora Vintage",
                 anio_lanzamiento: 1982,
                 estado_conservacion: "Restaurado - Funcional",
-                precio: 180000
-                imagen: "https://images.unsplash.com/photo-1629255319024-9ad074fcf8ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
+                precio: 180000,
+                imagen: "https://images.unsplash.com/photo-1629161742461-9c60e34c3873?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&ixid=MnwxfDB8MXxyYW5kb218fHx8fHx8fHwxNjQ3NjUzMDgw&ixlib=rb-1.2.1&q=80&w=600" // <- Imagen de prueba
             },
             {
                 id_producto: "RTM-1003", // CLAVE PRINCIPAL
@@ -200,8 +212,8 @@
                 categoria: "Cartucho de Colección",
                 anio_lanzamiento: 1987,
                 estado_conservacion: "Usado con detalles estéticos",
-                precio: 45000
-                imagen: "https://images.unsplash.com/photo-1605901309584-818e25960b8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
+                precio: 45000,
+                imagen: "https://images.unsplash.com/photo-1605901309584-818e25960b8f?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=400&ixid=MnwxfDB8MXxyYW5kb218fHx8fHx8fHwxNjQ3NjUzMDk3&ixlib=rb-1.2.1&q=80&w=600" // <- Imagen de prueba
             }
         ];
 
@@ -209,10 +221,21 @@
         function renderizarProductos() {
             const contenedor = document.getElementById('catalogo');
             
+            // Verificamos si el inventario tiene datos (para depuración)
+            if (!inventario || inventario.length === 0) {
+                contenedor.innerHTML = '<p style="color:red; text-align:center;">Error: El inventario está vacío o no se ha definido correctamente.</p>';
+                return;
+            }
+
+            // Limpiamos el contenedor por si acaso
+            contenedor.innerHTML = '';
+
             inventario.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
+                    <img src="${item.imagen}" alt="${item.nombre}" class="producto-img"> 
+                    
                     <h3>${item.nombre}</h3>
                     <div class="badges">
                         <span class="badge clave" title="Clave del Registro">ID: ${item.id_producto}</span>
@@ -236,6 +259,11 @@
             // Buscamos el registro usando la Clave
             const registroEncontrado = inventario.find(item => item.id_producto === idBusqueda);
             
+            if (!registroEncontrado) {
+                alert("Error: Registro no encontrado.");
+                return;
+            }
+
             // Formateamos el objeto para mostrarlo de forma académica
             const mensaje = `ESTRUCTURA DEL REGISTRO:\n\n` +
                             `Clave (id_producto): ${registroEncontrado.id_producto}\n` +
@@ -243,18 +271,16 @@
                             `Categoría: ${registroEncontrado.categoria}\n` +
                             `Año: ${registroEncontrado.anio_lanzamiento}\n` +
                             `Estado: ${registroEncontrado.estado_conservacion}\n` +
-                            `Precio: ${registroEncontrado.precio}\n\n` +
-                            `*Representación en memoria (JSON):*\n` + 
+                            `Precio: $${registroEncontrado.precio.toLocaleString('es-AR')}\n` +
+                            `Imagen (URL): ${registroEncontrado.imagen.substring(0, 30)}...\n\n` + // Recortamos la URL para que no sea tan larga
+                            `*Representación en memoria (JSON completo):*\n` + 
                             JSON.stringify(registroEncontrado, null, 2);
             
             alert(mensaje);
         }
 
-        // Iniciar la app al cargar
+        // Iniciar la app al cargar (AHORA DENTRO DEL SCRIPT PARA EVITAR ERRORES)
         window.onload = renderizarProductos;
-    </script>
-</body>
-</html>
     </script>
 </body>
 </html>
