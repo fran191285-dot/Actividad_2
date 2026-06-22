@@ -11,6 +11,7 @@
             --card-bg: #15151a;
             --neon-pink: #ff007f;
             --neon-cyan: #00f3ff;
+            --neon-red: #ff3333;
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
         }
@@ -75,7 +76,7 @@
 
         /* --- VENTANA FLOTANTE DEL FORMULARIO (MODAL) --- */
         #ventana-formulario {
-            display: none; /* Oculto por defecto */
+            display: none; 
             position: fixed;
             top: 20px;
             right: 20px;
@@ -85,7 +86,7 @@
             border-radius: 12px;
             border: 2px solid var(--neon-pink);
             box-shadow: -5px 5px 30px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 0, 127, 0.2);
-            z-index: 1000; /* Siempre arriba de todo */
+            z-index: 1000; 
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -154,8 +155,8 @@
             background-color: #333;
             color: #fff;
         }
-        /* ------------------------------------ */
 
+        /* --- CATÁLOGO --- */
         .container {
             max-width: 1200px;
             margin: 50px auto;
@@ -246,15 +247,19 @@
             margin-top: auto;
         }
 
+        /* --- BOTONES DE LA TARJETA --- */
         .botones {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap; 
         }
 
         button.btn-card {
             flex: 1;
-            padding: 12px;
+            min-width: 100px;
+            padding: 10px;
             font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
             font-weight: 600;
             border: none;
             border-radius: 6px;
@@ -276,6 +281,14 @@
         }
 
         .btn-datos:hover { background-color: rgba(255, 0, 127, 0.1); }
+
+        .btn-eliminar {
+            background-color: transparent;
+            color: var(--neon-red);
+            border: 1px solid var(--neon-red);
+        }
+
+        .btn-eliminar:hover { background-color: rgba(255, 51, 51, 0.1); }
     </style>
 </head>
 <body>
@@ -308,7 +321,6 @@
         </div>
 
     <script>
-        // ESTRUCTURA DE DATOS
         const inventario = [
             {
                 id_producto: "RTM-1001", 
@@ -339,16 +351,9 @@
             }
         ];
 
-        // FUNCIONES DE VENTANA (NUEVAS)
-        function abrirVentana() {
-            document.getElementById('ventana-formulario').style.display = 'block';
-        }
+        function abrirVentana() { document.getElementById('ventana-formulario').style.display = 'block'; }
+        function cerrarVentana() { document.getElementById('ventana-formulario').style.display = 'none'; }
 
-        function cerrarVentana() {
-            document.getElementById('ventana-formulario').style.display = 'none';
-        }
-
-        // RENDERIZAR PRODUCTOS
         function renderizarProductos() {
             const contenedor = document.getElementById('catalogo');
             contenedor.innerHTML = ''; 
@@ -366,16 +371,17 @@
                     <p class="detalle"><strong>Categoría:</strong> ${item.categoria}</p>
                     <p class="detalle"><strong>Estado:</strong> ${item.estado_conservacion}</p>
                     <div class="precio">$${item.precio.toLocaleString('es-AR')}</div>
+                    
                     <div class="botones">
                         <button class="btn-card btn-comprar" onclick="alert('Iniciando proceso de compra para: ${item.nombre}')">Comprar</button>
-                        <button class="btn-card btn-datos" onclick="verRegistro('${item.id_producto}')">Ver Registro</button>
+                        <button class="btn-card btn-datos" onclick="verRegistro('${item.id_producto}')">Ver Datos</button>
+                        <button class="btn-card btn-eliminar" onclick="eliminarProducto('${item.id_producto}')">Eliminar</button>
                     </div>
                 `;
                 contenedor.appendChild(card);
             });
         }
 
-        // MOSTRAR DATOS CRUDOS
         function verRegistro(idBusqueda) {
             const registroEncontrado = inventario.find(item => item.id_producto === idBusqueda);
             
@@ -392,12 +398,25 @@
             alert(mensaje);
         }
 
-        // AGREGAR NUEVO REGISTRO
+        // AGREGAR NUEVO REGISTRO (CON VALIDACIÓN DE CLAVE)
         function agregarProducto(event) {
             event.preventDefault();
 
+            // 1. Tomamos el ID que el usuario escribió
+            const idIngresado = document.getElementById('nuevo-id').value;
+
+            // 2. Verificamos si ya existe en el inventario
+            const existeClave = inventario.some(item => item.id_producto === idIngresado);
+
+            if (existeClave) {
+                // Si la clave existe, tiramos error y cortamos la función aquí
+                alert("Error: Ya existe una reliquia con el ID '" + idIngresado + "'. La clave debe ser única.");
+                return; 
+            }
+
+            // 3. Si la clave es nueva, armamos el registro y lo guardamos
             const nuevoRegistro = {
-                id_producto: document.getElementById('nuevo-id').value,
+                id_producto: idIngresado,
                 nombre: document.getElementById('nuevo-nombre').value,
                 categoria: document.getElementById('nueva-categoria').value,
                 anio_lanzamiento: parseInt(document.getElementById('nuevo-anio').value),
@@ -408,12 +427,22 @@
 
             inventario.push(nuevoRegistro);
             renderizarProductos();
-            
             document.getElementById('formAgregar').reset();
             alert('¡Nueva reliquia añadida exitosamente al inventario!');
-            
-            // Cerrar la ventana automáticamente tras añadir el registro
             cerrarVentana();
+        }
+
+        function eliminarProducto(idBusqueda) {
+            const confirmar = confirm("¿Estás seguro de que deseas eliminar este registro del inventario?");
+            
+            if (confirmar) {
+                const indice = inventario.findIndex(item => item.id_producto === idBusqueda);
+                
+                if (indice !== -1) {
+                    inventario.splice(indice, 1);
+                    renderizarProductos();
+                }
+            }
         }
 
         window.onload = renderizarProductos;
