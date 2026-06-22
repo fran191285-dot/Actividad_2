@@ -27,7 +27,60 @@
                 repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 243, 255, 0.05) 2px, rgba(0, 243, 255, 0.05) 4px);
         }
 
-        /* --- BOTÓN PARA ABRIR LA VENTANA --- */
+        /* --- MENÚ LATERAL DE ROLES (NUEVO) --- */
+        .menu-roles {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #111115;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #333;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.8);
+            z-index: 100;
+            width: 120px;
+        }
+
+        .menu-roles h3 {
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            margin-top: 0;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .rol-opcion {
+            padding: 10px;
+            margin: 10px 0;
+            text-align: center;
+            border: 1px solid #555;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* Estilo cuando el rol está seleccionado */
+        .rol-opcion.active {
+            background-color: rgba(0, 243, 255, 0.1);
+            color: var(--neon-cyan);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+
+        .rol-opcion.active-admin {
+            background-color: rgba(255, 0, 127, 0.1);
+            color: var(--neon-pink);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);
+        }
+        /* ------------------------------------ */
+
         .btn-flotante {
             position: absolute;
             top: 30px;
@@ -43,6 +96,7 @@
             box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
             transition: transform 0.2s;
             z-index: 100;
+            display: none; /* Oculto por defecto porque empezamos como Usuario */
         }
 
         .btn-flotante:hover {
@@ -74,7 +128,6 @@
             line-height: 1.6;
         }
 
-        /* --- VENTANA FLOTANTE DEL FORMULARIO (MODAL) --- */
         #ventana-formulario {
             display: none; 
             position: fixed;
@@ -136,9 +189,7 @@
             margin-bottom: 10px;
         }
         
-        .btn-submit:hover {
-            background-color: #00c4cc;
-        }
+        .btn-submit:hover { background-color: #00c4cc; }
 
         .btn-cerrar {
             width: 100%;
@@ -156,13 +207,12 @@
             color: #fff;
         }
 
-        /* --- CATÁLOGO --- */
         .container {
-            max-width: 1200px;
+            max-width: 1000px; /* Reducido un poco para dar espacio al menú lateral */
             margin: 50px auto;
             padding: 0 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
         }
 
@@ -247,7 +297,6 @@
             margin-top: auto;
         }
 
-        /* --- BOTONES DE LA TARJETA --- */
         .botones {
             display: flex;
             gap: 10px;
@@ -293,7 +342,13 @@
 </head>
 <body>
 
-    <button class="btn-flotante" onclick="abrirVentana()">+ Añadir Reliquia</button>
+    <div class="menu-roles">
+        <h3>Vista Actual</h3>
+        <div class="rol-opcion active" id="btn-rol-usuario" onclick="cambiarRol('usuario')">👤 Usuario</div>
+        <div class="rol-opcion" id="btn-rol-admin" onclick="cambiarRol('admin')">👑 Admin</div>
+    </div>
+
+    <button class="btn-flotante" id="btn-añadir" onclick="abrirVentana()">+ Añadir Reliquia</button>
 
     <header>
         <h1>RETRO MARKET</h1>
@@ -321,6 +376,9 @@
         </div>
 
     <script>
+        // VARIABLE DE ESTADO (Controla qué ve el usuario)
+        let rolActual = 'usuario';
+
         const inventario = [
             {
                 id_producto: "RTM-1001", 
@@ -351,6 +409,33 @@
             }
         ];
 
+        // FUNCIÓN PARA CAMBIAR ENTRE MODO USUARIO Y ADMIN
+        function cambiarRol(nuevoRol) {
+            rolActual = nuevoRol;
+            
+            // 1. Actualizar colores de los botones del menú izquierdo
+            document.getElementById('btn-rol-usuario').classList.remove('active');
+            document.getElementById('btn-rol-admin').classList.remove('active-admin');
+            
+            if(rolActual === 'usuario') {
+                document.getElementById('btn-rol-usuario').classList.add('active');
+            } else {
+                document.getElementById('btn-rol-admin').classList.add('active-admin');
+            }
+
+            // 2. Mostrar u ocultar el botón superior de "+ Añadir Reliquia"
+            const botonAñadir = document.getElementById('btn-añadir');
+            if (rolActual === 'admin') {
+                botonAñadir.style.display = 'block';
+            } else {
+                botonAñadir.style.display = 'none';
+                cerrarVentana(); // Por si el form quedó abierto
+            }
+
+            // 3. Volver a dibujar todas las tarjetas para actualizar los botones de eliminar
+            renderizarProductos();
+        }
+
         function abrirVentana() { document.getElementById('ventana-formulario').style.display = 'block'; }
         function cerrarVentana() { document.getElementById('ventana-formulario').style.display = 'none'; }
 
@@ -361,6 +446,13 @@
             inventario.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
+                
+                // RENDERIZADO CONDICIONAL: Solo creamos el botón eliminar si es admin
+                let botonEliminarHTML = '';
+                if (rolActual === 'admin') {
+                    botonEliminarHTML = `<button class="btn-card btn-eliminar" onclick="eliminarProducto('${item.id_producto}')">🗑️ Eliminar</button>`;
+                }
+
                 card.innerHTML = `
                     <img src="${item.imagen}" alt="${item.nombre}" class="producto-img"> 
                     <h3>${item.nombre}</h3>
@@ -375,8 +467,7 @@
                     <div class="botones">
                         <button class="btn-card btn-comprar" onclick="alert('Iniciando proceso de compra para: ${item.nombre}')">Comprar</button>
                         <button class="btn-card btn-datos" onclick="verRegistro('${item.id_producto}')">Ver Datos</button>
-                        <button class="btn-card btn-eliminar" onclick="eliminarProducto('${item.id_producto}')">Eliminar</button>
-                    </div>
+                        ${botonEliminarHTML} </div>
                 `;
                 contenedor.appendChild(card);
             });
@@ -384,7 +475,6 @@
 
         function verRegistro(idBusqueda) {
             const registroEncontrado = inventario.find(item => item.id_producto === idBusqueda);
-            
             const mensaje = `ESTRUCTURA DEL REGISTRO:\n\n` +
                             `Clave (id_producto): ${registroEncontrado.id_producto}\n` +
                             `Nombre: ${registroEncontrado.nombre}\n` +
@@ -394,27 +484,21 @@
                             `Precio: $${registroEncontrado.precio}\n\n` +
                             `*Representación en JSON:*\n` + 
                             JSON.stringify(registroEncontrado, null, 2);
-            
             alert(mensaje);
         }
 
-        // AGREGAR NUEVO REGISTRO (CON VALIDACIÓN DE CLAVE)
         function agregarProducto(event) {
             event.preventDefault();
+            if (rolActual !== 'admin') return; // Seguridad extra
 
-            // 1. Tomamos el ID que el usuario escribió
             const idIngresado = document.getElementById('nuevo-id').value;
-
-            // 2. Verificamos si ya existe en el inventario
             const existeClave = inventario.some(item => item.id_producto === idIngresado);
 
             if (existeClave) {
-                // Si la clave existe, tiramos error y cortamos la función aquí
                 alert("Error: Ya existe una reliquia con el ID '" + idIngresado + "'. La clave debe ser única.");
                 return; 
             }
 
-            // 3. Si la clave es nueva, armamos el registro y lo guardamos
             const nuevoRegistro = {
                 id_producto: idIngresado,
                 nombre: document.getElementById('nuevo-nombre').value,
@@ -433,11 +517,11 @@
         }
 
         function eliminarProducto(idBusqueda) {
+            if (rolActual !== 'admin') return; // Seguridad extra
+
             const confirmar = confirm("¿Estás seguro de que deseas eliminar este registro del inventario?");
-            
             if (confirmar) {
                 const indice = inventario.findIndex(item => item.id_producto === idBusqueda);
-                
                 if (indice !== -1) {
                     inventario.splice(indice, 1);
                     renderizarProductos();
@@ -445,6 +529,7 @@
             }
         }
 
+        // Arrancar la app
         window.onload = renderizarProductos;
     </script>
 </body>
