@@ -27,12 +27,11 @@
                 repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 243, 255, 0.05) 2px, rgba(0, 243, 255, 0.05) 4px);
         }
 
-        /* --- MENÚ LATERAL DE ROLES (NUEVO) --- */
+        /* --- MENÚ LATERAL DE ROLES --- */
         .menu-roles {
             position: fixed;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+            left: 30px;
+            top: 30px;
             background-color: #111115;
             padding: 15px;
             border-radius: 12px;
@@ -65,7 +64,6 @@
             font-weight: bold;
         }
 
-        /* Estilo cuando el rol está seleccionado */
         .rol-opcion.active {
             background-color: rgba(0, 243, 255, 0.1);
             color: var(--neon-cyan);
@@ -79,12 +77,18 @@
             border-color: var(--neon-pink);
             box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);
         }
-        /* ------------------------------------ */
 
-        .btn-flotante {
+        /* --- BOTONES SUPERIORES (ADMIN) --- */
+        .contenedor-botones-admin {
             position: absolute;
             top: 30px;
             right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn-flotante {
             background-color: var(--neon-pink);
             color: #fff;
             border: none;
@@ -95,14 +99,21 @@
             cursor: pointer;
             box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
             transition: transform 0.2s;
-            z-index: 100;
-            display: none; /* Oculto por defecto porque empezamos como Usuario */
+            display: none; 
         }
 
         .btn-flotante:hover {
             transform: scale(1.05);
             background-color: #ff3399;
         }
+
+        .btn-cyan {
+            background-color: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+
+        .btn-cyan:hover { background-color: #00c4cc; }
 
         header {
             text-align: center;
@@ -128,7 +139,8 @@
             line-height: 1.6;
         }
 
-        #ventana-formulario {
+        /* --- VENTANAS MODALES --- */
+        .ventana-modal {
             display: none; 
             position: fixed;
             top: 20px;
@@ -144,7 +156,11 @@
             overflow-y: auto;
         }
 
-        #ventana-formulario h2 {
+        /* Ventana de solicitudes usa borde cyan */
+        #ventana-solicitudes { border-color: var(--neon-cyan); box-shadow: -5px 5px 30px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 243, 255, 0.2); }
+        #ventana-solicitudes h2 { color: var(--neon-cyan); }
+
+        .ventana-modal h2 {
             font-family: 'VT323', monospace;
             color: var(--neon-pink);
             margin-top: 0;
@@ -170,11 +186,7 @@
             box-sizing: border-box;
         }
 
-        input:focus {
-            outline: none;
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
-        }
+        input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: 0 0 8px rgba(0, 243, 255, 0.3); }
 
         .btn-submit {
             width: 100%;
@@ -202,13 +214,23 @@
             transition: 0.2s;
         }
 
-        .btn-cerrar:hover {
-            background-color: #333;
-            color: #fff;
+        .btn-cerrar:hover { background-color: #333; color: #fff; }
+
+        /* Estilo para las tarjetas de solicitudes */
+        .tarjeta-solicitud {
+            border: 1px solid var(--neon-cyan);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background: #0a0a0c;
         }
 
+        .tarjeta-solicitud h4 { margin: 0 0 10px 0; color: var(--text-main); font-size: 1.1rem;}
+        .tarjeta-solicitud p { margin: 5px 0; font-size: 0.9rem; color: var(--text-muted); }
+        .tarjeta-solicitud .sol-precio { color: var(--neon-pink); font-family: 'VT323', monospace; font-size: 1.4rem; }
+
         .container {
-            max-width: 1000px; /* Reducido un poco para dar espacio al menú lateral */
+            max-width: 1000px; 
             margin: 50px auto;
             padding: 0 20px;
             display: grid;
@@ -239,104 +261,24 @@
             transition: transform 0.3s ease;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--neon-cyan);
-        }
-
+        .card:hover { transform: translateY(-5px); border-color: var(--neon-cyan); }
         .card:hover::before { transform: scaleX(1); }
 
-        .producto-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #333;
-            background-color: #000;
-        }
-
-        .card h3 {
-            font-size: 1.5rem;
-            margin: 0 0 15px 0;
-            color: #fff;
-        }
-
+        .producto-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; border: 1px solid #333; background-color: #000; }
+        .card h3 { font-size: 1.5rem; margin: 0 0 15px 0; color: #fff; }
         .badges { margin-bottom: 15px; }
+        .badge { font-family: 'VT323', monospace; font-size: 1.1rem; background: rgba(0, 243, 255, 0.1); color: var(--neon-cyan); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--neon-cyan); margin-right: 8px; display: inline-block; margin-bottom: 5px; }
+        .badge.clave { background: rgba(255, 0, 127, 0.1); color: var(--neon-pink); border-color: var(--neon-pink); }
+        .detalle { margin: 8px 0; color: var(--text-muted); font-size: 0.95rem; }
+        .precio { font-family: 'VT323', monospace; font-size: 2.5rem; color: var(--neon-cyan); margin: 20px 0; margin-top: auto; }
 
-        .badge {
-            font-family: 'VT323', monospace;
-            font-size: 1.1rem;
-            background: rgba(0, 243, 255, 0.1);
-            color: var(--neon-cyan);
-            padding: 4px 10px;
-            border-radius: 4px;
-            border: 1px solid var(--neon-cyan);
-            margin-right: 8px;
-            display: inline-block;
-            margin-bottom: 5px;
-        }
-
-        .badge.clave {
-            background: rgba(255, 0, 127, 0.1);
-            color: var(--neon-pink);
-            border-color: var(--neon-pink);
-        }
-
-        .detalle {
-            margin: 8px 0;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .precio {
-            font-family: 'VT323', monospace;
-            font-size: 2.5rem;
-            color: var(--neon-cyan);
-            margin: 20px 0;
-            margin-top: auto;
-        }
-
-        .botones {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap; 
-        }
-
-        button.btn-card {
-            flex: 1;
-            min-width: 100px;
-            padding: 10px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-comprar {
-            background-color: var(--neon-cyan);
-            color: #000;
-        }
-
+        .botones { display: flex; gap: 10px; flex-wrap: wrap; }
+        button.btn-card { flex: 1; min-width: 100px; padding: 10px; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .btn-comprar { background-color: var(--neon-cyan); color: #000; }
         .btn-comprar:hover { background-color: #00c4cc; }
-
-        .btn-datos {
-            background-color: transparent;
-            color: var(--neon-pink);
-            border: 1px solid var(--neon-pink);
-        }
-
+        .btn-datos { background-color: transparent; color: var(--neon-pink); border: 1px solid var(--neon-pink); }
         .btn-datos:hover { background-color: rgba(255, 0, 127, 0.1); }
-
-        .btn-eliminar {
-            background-color: transparent;
-            color: var(--neon-red);
-            border: 1px solid var(--neon-red);
-        }
-
+        .btn-eliminar { background-color: transparent; color: var(--neon-red); border: 1px solid var(--neon-red); }
         .btn-eliminar:hover { background-color: rgba(255, 51, 51, 0.1); }
     </style>
 </head>
@@ -348,14 +290,17 @@
         <div class="rol-opcion" id="btn-rol-admin" onclick="cambiarRol('admin')">👑 Admin</div>
     </div>
 
-    <button class="btn-flotante" id="btn-añadir" onclick="abrirVentana()">+ Añadir Reliquia</button>
+    <div class="contenedor-botones-admin">
+        <button class="btn-flotante btn-cyan" id="btn-ver-solicitudes" onclick="abrirSolicitudes()">🛒 Ver Solicitudes</button>
+        <button class="btn-flotante" id="btn-añadir" onclick="abrirVentana()">+ Añadir Reliquia</button>
+    </div>
 
     <header>
         <h1>RETRO MARKET</h1>
         <p class="descripcion">Catálogo de tecnología retro, consolas clásicas y computadoras vintage.</p>
     </header>
 
-    <div id="ventana-formulario">
+    <div id="ventana-formulario" class="ventana-modal">
         <h2>Nueva Publicación</h2>
         <form id="formAgregar" onsubmit="agregarProducto(event)">
             <div class="formulario-columna">
@@ -368,17 +313,24 @@
                 <input type="url" id="nueva-imagen" placeholder="URL de la imagen" required>
             </div>
             <button type="submit" class="btn-submit">Guardar Registro</button>
-            <button type="button" class="btn-cerrar" onclick="cerrarVentana()">Volver al Menú Principal</button>
+            <button type="button" class="btn-cerrar" onclick="cerrarVentana()">Cerrar Ventana</button>
         </form>
+    </div>
+
+    <div id="ventana-solicitudes" class="ventana-modal">
+        <h2>Solicitudes de Compra</h2>
+        <div id="lista-solicitudes">
+            </div>
+        <button type="button" class="btn-cerrar" onclick="cerrarSolicitudes()" style="margin-top: 15px;">Cerrar Ventana</button>
     </div>
 
     <div class="container" id="catalogo">
         </div>
 
     <script>
-        // VARIABLE DE ESTADO (Controla qué ve el usuario)
         let rolActual = 'usuario';
 
+        // ESTRUCTURA 1: INVENTARIO (Catálogo)
         const inventario = [
             {
                 id_producto: "RTM-1001", 
@@ -409,11 +361,20 @@
             }
         ];
 
-        // FUNCIÓN PARA CAMBIAR ENTRE MODO USUARIO Y ADMIN
+        // ESTRUCTURA 2: SOLICITUDES DE COMPRA (NUEVA)
+        let solicitudesCompra = [];
+
         function cambiarRol(nuevoRol) {
+            if (nuevoRol === 'admin' && rolActual !== 'admin') {
+                const password = prompt("🔒 Seguridad del Sistema:\nIngrese la contraseña maestra para habilitar el modo Administrador:");
+                if (password !== "admin123") {
+                    alert("❌ Contraseña incorrecta. Se mantiene el modo Usuario.");
+                    return; 
+                }
+            }
+
             rolActual = nuevoRol;
             
-            // 1. Actualizar colores de los botones del menú izquierdo
             document.getElementById('btn-rol-usuario').classList.remove('active');
             document.getElementById('btn-rol-admin').classList.remove('active-admin');
             
@@ -423,21 +384,78 @@
                 document.getElementById('btn-rol-admin').classList.add('active-admin');
             }
 
-            // 2. Mostrar u ocultar el botón superior de "+ Añadir Reliquia"
+            // Mostrar/Ocultar AMBOS botones de Admin
             const botonAñadir = document.getElementById('btn-añadir');
+            const botonSolicitudes = document.getElementById('btn-ver-solicitudes');
+            
             if (rolActual === 'admin') {
                 botonAñadir.style.display = 'block';
+                botonSolicitudes.style.display = 'block';
             } else {
                 botonAñadir.style.display = 'none';
-                cerrarVentana(); // Por si el form quedó abierto
+                botonSolicitudes.style.display = 'none';
+                cerrarVentana(); 
+                cerrarSolicitudes();
             }
 
-            // 3. Volver a dibujar todas las tarjetas para actualizar los botones de eliminar
             renderizarProductos();
         }
 
-        function abrirVentana() { document.getElementById('ventana-formulario').style.display = 'block'; }
+        // CONTROL DE VENTANAS
+        function abrirVentana() { 
+            document.getElementById('ventana-formulario').style.display = 'block'; 
+            cerrarSolicitudes(); // Cierra la otra para no superponer
+        }
         function cerrarVentana() { document.getElementById('ventana-formulario').style.display = 'none'; }
+        
+        function cerrarSolicitudes() { document.getElementById('ventana-solicitudes').style.display = 'none'; }
+
+        // MOSTRAR SOLICITUDES AL ADMIN (NUEVO)
+        function abrirSolicitudes() {
+            cerrarVentana(); // Cierra el formulario de añadir si estaba abierto
+            const contenedorLista = document.getElementById('lista-solicitudes');
+            contenedorLista.innerHTML = '';
+
+            if (solicitudesCompra.length === 0) {
+                contenedorLista.innerHTML = '<p style="color:var(--text-muted); text-align:center;">No hay solicitudes de compra pendientes en el sistema.</p>';
+            } else {
+                // Recorremos el arreglo de solicitudes y creamos HTML
+                solicitudesCompra.forEach(solicitud => {
+                    contenedorLista.innerHTML += `
+                        <div class="tarjeta-solicitud">
+                            <h4>🎫 Ref: ${solicitud.id_solicitud}</h4>
+                            <p><strong>Clave Producto:</strong> ${solicitud.producto_id}</p>
+                            <p><strong>Artículo:</strong> ${solicitud.producto_nombre}</p>
+                            <p class="sol-precio">$${solicitud.precio.toLocaleString('es-AR')}</p>
+                            <p><em>Estado: En revisión</em></p>
+                        </div>
+                    `;
+                });
+            }
+            
+            document.getElementById('ventana-solicitudes').style.display = 'block';
+        }
+
+        // ENVIAR SOLICITUD DE COMPRA (NUEVO)
+        function enviarCompra(idProducto) {
+            // Buscamos el producto entero usando su clave
+            const productoSeleccionado = inventario.find(item => item.id_producto === idProducto);
+            
+            if (productoSeleccionado) {
+                // Generamos un registro nuevo para la solicitud
+                const nuevaSolicitud = {
+                    id_solicitud: "REQ-" + Math.floor(Math.random() * 10000), // Clave aleatoria simple
+                    producto_id: productoSeleccionado.id_producto,
+                    producto_nombre: productoSeleccionado.nombre,
+                    precio: productoSeleccionado.precio
+                };
+
+                // Lo insertamos en el arreglo de solicitudes
+                solicitudesCompra.push(nuevaSolicitud);
+                
+                alert(`✅ ¡Solicitud enviada con éxito!\n\nEl administrador revisará tu intención de compra para:\n👉 ${productoSeleccionado.nombre}\n\nCódigo de seguimiento: ${nuevaSolicitud.id_solicitud}`);
+            }
+        }
 
         function renderizarProductos() {
             const contenedor = document.getElementById('catalogo');
@@ -447,7 +465,6 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 
-                // RENDERIZADO CONDICIONAL: Solo creamos el botón eliminar si es admin
                 let botonEliminarHTML = '';
                 if (rolActual === 'admin') {
                     botonEliminarHTML = `<button class="btn-card btn-eliminar" onclick="eliminarProducto('${item.id_producto}')">🗑️ Eliminar</button>`;
@@ -465,9 +482,10 @@
                     <div class="precio">$${item.precio.toLocaleString('es-AR')}</div>
                     
                     <div class="botones">
-                        <button class="btn-card btn-comprar" onclick="alert('Iniciando proceso de compra para: ${item.nombre}')">Comprar</button>
+                        <button class="btn-card btn-comprar" onclick="enviarCompra('${item.id_producto}')">Comprar</button>
                         <button class="btn-card btn-datos" onclick="verRegistro('${item.id_producto}')">Ver Datos</button>
-                        ${botonEliminarHTML} </div>
+                        ${botonEliminarHTML}
+                    </div>
                 `;
                 contenedor.appendChild(card);
             });
@@ -489,7 +507,7 @@
 
         function agregarProducto(event) {
             event.preventDefault();
-            if (rolActual !== 'admin') return; // Seguridad extra
+            if (rolActual !== 'admin') return; 
 
             const idIngresado = document.getElementById('nuevo-id').value;
             const existeClave = inventario.some(item => item.id_producto === idIngresado);
@@ -517,7 +535,7 @@
         }
 
         function eliminarProducto(idBusqueda) {
-            if (rolActual !== 'admin') return; // Seguridad extra
+            if (rolActual !== 'admin') return; 
 
             const confirmar = confirm("¿Estás seguro de que deseas eliminar este registro del inventario?");
             if (confirmar) {
@@ -529,7 +547,6 @@
             }
         }
 
-        // Arrancar la app
         window.onload = renderizarProductos;
     </script>
 </body>
